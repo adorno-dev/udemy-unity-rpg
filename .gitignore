@@ -1,6 +1,7 @@
 .vscode/
 obj/
-Assets/
+Animations/
+Graphics/
 Library/
 Logs/
 Packages/
