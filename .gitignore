@@ -10,6 +10,7 @@ ProjectSettings/
 Temp/
 UserSettings/
 Scenes/
+Assets/Tile Palette/
 **/**.csproj
 **/**.sln
 **/**.meta
