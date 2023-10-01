@@ -4,6 +4,13 @@ public abstract class Enemy : Entity
 {
     [SerializeField] protected LayerMask whatIsPlayer;
 
+    [Header("Stunned info")]
+    public Vector2 stunDirection;
+    public float stunDuration;
+    protected bool canBeStunned;
+    [SerializeField] protected GameObject counterImage;
+
+
     [Header("Move info")]
     public float moveSpeed;
     public float idleTime;
@@ -38,8 +45,32 @@ public abstract class Enemy : Entity
         Gizmos.DrawLine(transform.position, new Vector3(transform.position.x + attackDistance * facingDir, transform.position.y));
     }
 
+    public virtual bool CanBeStunned()
+    {
+        if (canBeStunned)
+        {
+            CloseCounterAttackWindow();
+            
+            return true;
+        }
+
+        return false;
+    }
+
     public virtual RaycastHit2D IsPlayerDetected()
         => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, 50, whatIsPlayer);
     
     public virtual void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();
+
+    public virtual void OpenCounterAttackWindow()
+    {
+        canBeStunned = true;
+        counterImage.SetActive(true);
+    }
+
+    public virtual void CloseCounterAttackWindow()
+    {
+        canBeStunned = false;
+        counterImage.SetActive(false);
+    }
 }

@@ -5,6 +5,7 @@ public sealed class Player : Entity
 {
     [Header("Attack info")]
     public Vector2[] attackMovement;
+    public float counterAttackDuration = .2f;
 
     [Header("Move info")]
     public float moveSpeed = 12f;
@@ -31,6 +32,7 @@ public sealed class Player : Entity
     public PlayerWallSlideState wallSlideState { get; private set; }
     public PlayerWallJumpState wallJumpState { get; private set; }
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
+    public PlayerCounterAttackState counterAttackState { get; private set; }
 
     #endregion
 
@@ -48,6 +50,7 @@ public sealed class Player : Entity
         wallSlideState = new PlayerWallSlideState(stateMachine, this, "WallSlide");
         wallJumpState = new PlayerWallJumpState(stateMachine, this, "WallJump");
         primaryAttackState = new PlayerPrimaryAttackState(stateMachine, this, "Attack");
+        counterAttackState = new PlayerCounterAttackState(stateMachine, this, "CounterAttack");
     }
 
     protected override void Start()
