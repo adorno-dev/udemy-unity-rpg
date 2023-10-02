@@ -11,6 +11,7 @@ Temp/
 UserSettings/
 Scenes/
 Assets/Tile Palette/
+Assets/Prefabs/
 **/**.csproj
 **/**.sln
 **/**.meta

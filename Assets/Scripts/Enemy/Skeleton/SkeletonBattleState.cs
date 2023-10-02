@@ -16,7 +16,7 @@ public sealed class SkeletonBattleState : EnemyState
     {
         base.Enter();
 
-        player = GameObject.Find("Player").transform;
+        player = PlayerManager.instance.transform;
     }
 
     public override void Update()
