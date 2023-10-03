@@ -16,4 +16,9 @@ public sealed class PlayerAnimationTriggers : MonoBehaviour
                 hit.GetComponent<Enemy>().Damage();
         }
     }
+
+    private void ThrowSword()
+    {
+        SkillManager.instance.sword.CreateSword();
+    }
 }

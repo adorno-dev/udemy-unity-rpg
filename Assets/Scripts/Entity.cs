@@ -60,7 +60,7 @@ public abstract class Entity : MonoBehaviour
 
         StartCoroutine("HitKnockback");
 
-        Debug.Log($"{gameObject.name} was damaged!");
+        // Debug.Log($"{gameObject.name} was damaged!");
     }
 
     #region Velocity

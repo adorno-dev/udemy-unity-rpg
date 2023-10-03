@@ -10,6 +10,7 @@ public sealed class Player : Entity
     [Header("Move info")]
     public float moveSpeed = 12f;
     public float jumpForce;
+    public float swordReturnImpact;
 
     [Header("Dash info")]
     public float dashSpeed;
@@ -20,6 +21,7 @@ public sealed class Player : Entity
 
 
     public SkillManager skill { get; private set; }
+    public GameObject sword { get; private set; }
 
     #region States
 
@@ -33,6 +35,8 @@ public sealed class Player : Entity
     public PlayerWallJumpState wallJumpState { get; private set; }
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
     public PlayerCounterAttackState counterAttackState { get; private set; }
+    public PlayerAimSwordState aimSwordState { get; private set; }
+    public PlayerCatchSwordState catchSwordState { get; private set; }
 
     #endregion
 
@@ -51,6 +55,8 @@ public sealed class Player : Entity
         wallJumpState = new PlayerWallJumpState(stateMachine, this, "WallJump");
         primaryAttackState = new PlayerPrimaryAttackState(stateMachine, this, "Attack");
         counterAttackState = new PlayerCounterAttackState(stateMachine, this, "CounterAttack");
+        aimSwordState = new PlayerAimSwordState(stateMachine, this, "AimSword");
+        catchSwordState = new PlayerCatchSwordState(stateMachine, this, "CatchSword");
     }
 
     protected override void Start()
@@ -85,6 +91,18 @@ public sealed class Player : Entity
 
             stateMachine.ChangeState(dashState);
         }
+    }
+
+    public void AssignNewSword(GameObject newSword)
+    {
+        sword = newSword;
+    }
+
+    public void CatchTheSword()
+    {
+        stateMachine.ChangeState(catchSwordState);
+
+        Destroy(sword);
     }
 
     public IEnumerator BusyFor(float seconds)
