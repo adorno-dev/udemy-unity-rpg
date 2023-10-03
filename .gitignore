@@ -12,6 +12,7 @@ UserSettings/
 Scenes/
 Assets/Tile Palette/
 Assets/Prefabs/
+Assets/TextMesh Pro/
 **/**.csproj
 **/**.sln
 **/**.meta
