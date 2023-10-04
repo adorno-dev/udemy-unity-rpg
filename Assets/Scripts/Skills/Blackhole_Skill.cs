@@ -37,6 +37,11 @@ public class Blackhole_Skill : Skill
         return false;
     }
 
+    public float GetBlackholdeRadius()
+    {
+        return maxSize / 2;
+    }
+
     public override bool CanUseSkill()
     {
         return base.CanUseSkill();
