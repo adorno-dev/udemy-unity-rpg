@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public abstract class Entity : MonoBehaviour
     public Rigidbody2D rb { get; private set; }
     public EntityFX fx { get; set; }
     public SpriteRenderer sr { get; private set; }
+    public CharacterStats stats { get; private set; }
+    public CapsuleCollider2D cd { get; private set; }
 
     #endregion
 
@@ -41,6 +44,8 @@ public abstract class Entity : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         fx = GetComponent<EntityFX>();
+        stats = GetComponent<CharacterStats>();
+        cd = GetComponent<CapsuleCollider2D>();
     }
 
     protected virtual void Update() {}
@@ -56,7 +61,7 @@ public abstract class Entity : MonoBehaviour
         isKnocked = false;
     }
 
-    public virtual void Damage()
+    public virtual void DamageEffect()
     {
         fx.StartCoroutine("FlashFX");
 
@@ -82,7 +87,7 @@ public abstract class Entity : MonoBehaviour
 
         rb.velocity = new Vector2(xVelocity, yVelocity);
 
-        FlipController(rb.velocity.x);
+        FlipController(xVelocity);
     }
     
     #endregion
@@ -108,7 +113,7 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void Flip()
     {
-        facingDir *= -1;
+        facingDir = facingDir * -1;
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
@@ -131,4 +136,5 @@ public abstract class Entity : MonoBehaviour
             sr.color = Color.white;
     }
 
+    public virtual void Die() {}
 }

@@ -25,6 +25,8 @@ public abstract class Enemy : Entity
 
     public EnemyStateMachine stateMachine { get; private set; }
 
+    public string lastAnimBoolName { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -39,6 +41,11 @@ public abstract class Enemy : Entity
         base.Update();
 
         stateMachine.currentState.Update();
+    }
+
+    public virtual void AssignLastAnimName(string animBoolName)
+    {
+        this.lastAnimBoolName = animBoolName;
     }
 
     protected override void OnDrawGizmos()

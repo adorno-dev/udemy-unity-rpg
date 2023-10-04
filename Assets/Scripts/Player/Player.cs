@@ -38,6 +38,7 @@ public sealed class Player : Entity
     public PlayerAimSwordState aimSwordState { get; private set; }
     public PlayerCatchSwordState catchSwordState { get; private set; }
     public PlayerBlackholeState blackholeState { get; private set; }
+    public PlayerDeathState deathState { get; private set; }
 
     #endregion
 
@@ -54,11 +55,15 @@ public sealed class Player : Entity
         dashState = new PlayerDashState(stateMachine, this, "Dash");
         wallSlideState = new PlayerWallSlideState(stateMachine, this, "WallSlide");
         wallJumpState = new PlayerWallJumpState(stateMachine, this, "WallJump");
+        
         primaryAttackState = new PlayerPrimaryAttackState(stateMachine, this, "Attack");
         counterAttackState = new PlayerCounterAttackState(stateMachine, this, "CounterAttack");
+
         aimSwordState = new PlayerAimSwordState(stateMachine, this, "AimSword");
         catchSwordState = new PlayerCatchSwordState(stateMachine, this, "CatchSword");
         blackholeState = new PlayerBlackholeState(stateMachine, this, "Jump");
+
+        deathState = new PlayerDeathState(stateMachine, this, "Die");
     }
 
     protected override void Start()
@@ -121,4 +126,12 @@ public sealed class Player : Entity
 
     public void AnimationTrigger()
         => stateMachine.currentState.AnimationFinishTrigger();
+
+
+    public override void Die()
+    {
+        base.Die();
+
+        stateMachine.ChangeState(deathState);
+    }
 }
