@@ -36,5 +36,7 @@ public abstract class EnemyState
     }
 
     public virtual void AnimationFinishTrigger()
-        => triggerCalled = true;
+    {
+        triggerCalled = true;
+    }
 }

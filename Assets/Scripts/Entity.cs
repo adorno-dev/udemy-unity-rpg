@@ -31,9 +31,11 @@ public abstract class Entity : MonoBehaviour
     [SerializeField] protected Transform wallCheck;
     [SerializeField] protected float wallCheckDistance;
 
-
     public int facingDir { get; private set; } = 1;
     protected bool facingRight = true;
+
+
+    public Action onFlipped;
 
 
     protected virtual void Awake() {}
@@ -61,14 +63,14 @@ public abstract class Entity : MonoBehaviour
         isKnocked = false;
     }
 
-    public virtual void DamageEffect()
+    protected virtual void ReturnDefaultSpeed()
     {
-        fx.StartCoroutine("FlashFX");
-
-        StartCoroutine("HitKnockback");
-
-        // Debug.Log($"{gameObject.name} was damaged!");
+        anim.speed = 1;
     }
+
+    public virtual void SlowEntityBy(float slowPercentage, float slowDuration) {}
+
+    public virtual void DamageImpact() => StartCoroutine("HitKnockback");
 
     #region Velocity
 
@@ -116,6 +118,9 @@ public abstract class Entity : MonoBehaviour
         facingDir = facingDir * -1;
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
+
+        if (onFlipped != null)
+            onFlipped();
     }
 
     public virtual void FlipController(float x)
@@ -127,14 +132,6 @@ public abstract class Entity : MonoBehaviour
     }
 
     #endregion
-
-    public void MakeTransparent(bool transparent)
-    {
-        if (transparent)
-            sr.color = Color.clear;
-        else
-            sr.color = Color.white;
-    }
 
     public virtual void Die() {}
 }

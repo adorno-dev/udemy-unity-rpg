@@ -11,6 +11,9 @@ public sealed class Player : Entity
     public float moveSpeed = 12f;
     public float jumpForce;
     public float swordReturnImpact;
+    private float defaultMoveSpeed;
+    private float defaultJumpForce;
+    private float defaultDashSpeed;
 
     [Header("Dash info")]
     public float dashSpeed;
@@ -73,6 +76,10 @@ public sealed class Player : Entity
         skill = SkillManager.instance;
 
         stateMachine.Initialize(idleState);
+
+        defaultMoveSpeed = moveSpeed;
+        defaultJumpForce = jumpForce;
+        defaultDashSpeed = dashSpeed;
     }
 
     protected override void Update()
@@ -101,6 +108,25 @@ public sealed class Player : Entity
 
             stateMachine.ChangeState(dashState);
         }
+    }
+
+    public override void SlowEntityBy(float slowPercentage, float slowDuration)
+    {
+        moveSpeed = moveSpeed * (1 - slowPercentage);
+        jumpForce = jumpForce * (1 - slowPercentage);
+        dashSpeed = dashSpeed * (1 - slowPercentage);
+        anim.speed = anim.speed * (1 - slowPercentage);
+
+        Invoke("ReturnDefaultSpeed", slowDuration);
+    }
+
+    protected override void ReturnDefaultSpeed()
+    {
+        base.ReturnDefaultSpeed();
+
+        moveSpeed = defaultMoveSpeed;
+        jumpForce = defaultJumpForce;
+        dashSpeed = defaultDashSpeed;
     }
 
     public void AssignNewSword(GameObject newSword)

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
+    private EntityFX fx;
+
     [Header("Major stats")]
     public Stat strength;       // 1 point increase damage by 1 and crit. power by 1%
     public Stat agility;        // 1 point increase evasion by %1 and crit. change by %1
@@ -30,6 +32,7 @@ public class CharacterStats : MonoBehaviour
     public bool isShocked;      // reduce accuracy by 20%
 
 
+    [SerializeField] private float ailmentsDuration = 4;
     private float ignitedTimer;
     private float chilledTimer;
     private float shockedTimer;
@@ -38,15 +41,22 @@ public class CharacterStats : MonoBehaviour
     private float igniteDamageCooldown = .3f;
     private float igniteDamageTimer;
     private int igniteDamage;
+    [SerializeField] private GameObject shockStrikePrefab;
+    private int shockDamage;
 
 
-    [SerializeField] private int currentHealth;
+    public int currentHealth;
+
+    public System.Action onHealthChanged;
+    protected bool isDead;
 
     protected virtual void Start()
     {
         critPower.SetDefaultValue(150);
 
-        currentHealth = maxHealth.GetValue();
+        currentHealth = GetMaxHealthValue();
+
+        fx = GetComponent<EntityFX>();
     }
 
     protected virtual void Update()
@@ -62,17 +72,21 @@ public class CharacterStats : MonoBehaviour
 
         if (chilledTimer < 0)
             isChilled = false;
-        
+
         if (shockedTimer < 0)
             isShocked = false;
-        
-        if (igniteDamageTimer < 0 && isIgnited)
+
+        if (isIgnited)
+            ApplyIgniteDamage();
+    }
+
+    private void ApplyIgniteDamage()
+    {
+        if (igniteDamageTimer < 0)
         {
-            Debug.Log("Take burn damage " + igniteDamage);
+            DecreaseHealthBy(igniteDamage);
 
-            currentHealth -= igniteDamage;
-
-            if (currentHealth < 0)
+            if (currentHealth < 0 && !isDead)
                 Die();
 
             igniteDamageTimer = igniteDamageCooldown;
@@ -93,9 +107,12 @@ public class CharacterStats : MonoBehaviour
 
         totalDamage = CheckTargetArmor(targetStats, totalDamage);
 
-        // targetStats.TakeDamage(totalDamage);
-        DoMagicalDamage(targetStats);
+        targetStats.TakeDamage(totalDamage);
+        // if inventory current weapon has fire effect
+        // then DoMagicalDamage(targetStats);
     }
+
+    #region Magical damage and ailments
 
     public virtual void DoMagicalDamage(CharacterStats targetStats)
     {
@@ -110,6 +127,11 @@ public class CharacterStats : MonoBehaviour
         if (Mathf.Max(_fireDamage, _iceDamage, _lightingDamage) <= 0)
             return;
 
+        AttemptToApplyAilments(targetStats, _fireDamage, _iceDamage, _lightingDamage);
+    }
+
+    private void AttemptToApplyAilments(CharacterStats targetStats, int _fireDamage, int _iceDamage, int _lightingDamage)
+    {
         bool canApplyIgnite = _fireDamage > _iceDamage && _fireDamage > _lightingDamage;
         bool canApplyChill = _iceDamage > _fireDamage && _iceDamage > _lightingDamage;
         bool canApplyShock = _lightingDamage > _fireDamage && _lightingDamage > _iceDamage;
@@ -141,6 +163,9 @@ public class CharacterStats : MonoBehaviour
         if (canApplyIgnite)
             targetStats.SetupIgniteDamage(Mathf.RoundToInt(_fireDamage * .2f));
 
+        if (canApplyShock)
+            targetStats.SetupShockStrikeDamage(Mathf.RoundToInt(_lightingDamage * .1f));
+
         targetStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
     }
 
@@ -153,44 +178,124 @@ public class CharacterStats : MonoBehaviour
 
     public void ApplyAilments(bool ignite, bool chill, bool shock)
     {
-        if (isIgnited || isChilled || isShocked)
+        bool canApplyIgnite = !isIgnited && !isChilled && !isShocked;
+        bool canApplyChill = !isIgnited && !isChilled && !isShocked;
+        bool canApplyShock = !isIgnited && !isChilled;
+
+        if (ignite && canApplyIgnite)
+        {
+            ignitedTimer = ailmentsDuration;
+            isIgnited = ignite;
+
+            fx.IgniteFxFor(ailmentsDuration);
+        }
+
+        if (chill && canApplyChill)
+        {
+            chilledTimer = ailmentsDuration;
+            isChilled = chill;
+
+            float slowPercentage = .2f;
+
+            GetComponent<Entity>()?.SlowEntityBy(slowPercentage, ailmentsDuration);
+
+            fx.ChillFxFor(ailmentsDuration);
+        }
+
+        if (shock && canApplyShock)
+        {
+            if (!isShocked)
+            {
+                ApplyShock(shock);
+            }
+            else
+            {
+                if (GetComponent<Player>() != null)
+                    return;
+
+                HitNearestTargetWithShockStrike();
+            }
+        }
+    }
+
+    public void ApplyShock(bool shock)
+    {
+        if (isShocked)
             return;
 
-        if (ignite)
+        shockedTimer = ailmentsDuration;
+        isShocked = shock;
+
+        fx.ShockFxFor(ailmentsDuration);
+    }
+
+    private void HitNearestTargetWithShockStrike()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 25);
+
+        float closestDistance = Mathf.Infinity;
+        Transform closestEnemy = null;
+
+        foreach (var hit in colliders)
         {
-            ignitedTimer = 2;
-            isIgnited = ignite;
+            if (hit.GetComponent<Enemy>() != null && Vector2.Distance(transform.position, hit.transform.position) > 1)
+            {
+                float distanceToEnemy = Vector2.Distance(transform.position, hit.transform.position);
+
+                if (distanceToEnemy < closestDistance)
+                {
+                    closestDistance = distanceToEnemy;
+                    closestEnemy = hit.transform;
+                }
+            }
+
+            if (closestEnemy == null)       // delete if you don't want shocked target to be hit by shock strike
+                closestEnemy = transform;
         }
 
-        if (chill)
+        if (closestEnemy != null)
         {
-            chilledTimer = 2;
-            isChilled = chill;
-        }
-
-        if (shock)
-        {
-            shockedTimer = 2;
-            isShocked = shock;
+            GameObject newShockStrike = Instantiate(shockStrikePrefab, transform.position, Quaternion.identity);
+            newShockStrike.GetComponent<ShockStrike_Controller>().Setup(shockDamage, closestEnemy.GetComponent<CharacterStats>());
         }
     }
 
     public virtual void TakeDamage(int damage)
     {
+        DecreaseHealthBy(damage);
+
+        GetComponent<Entity>().DamageImpact();
+
+        fx.StartCoroutine("FlashFX");
+
+        if (currentHealth < 0 && !isDead)
+            Die();
+        
+
+    }
+
+    protected virtual void DecreaseHealthBy(int damage)
+    {
         currentHealth -= damage;
 
-        Debug.Log(damage);
-
-        if (currentHealth < 0)
-            Die();
+        if (onHealthChanged != null)
+            onHealthChanged();
     }
 
     public void SetupIgniteDamage(int damage) => igniteDamage = damage;
 
-    protected virtual void Die()
-    {
+    public void SetupShockStrikeDamage(int damage) => shockDamage = damage;
 
+    #endregion
+
+    public int GetMaxHealthValue() => maxHealth.GetValue() + vitality.GetValue() * 5;
+
+    protected virtual void Die() 
+    {
+        isDead = true;
     }
+
+    #region Stat calculations
 
     private int CheckTargetArmor(CharacterStats targetStats, int totalDamage)
     {
@@ -237,5 +342,7 @@ public class CharacterStats : MonoBehaviour
 
         return Mathf.RoundToInt(critDamage);
     }
+
+    #endregion
 
 }
