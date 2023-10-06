@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
@@ -48,7 +49,7 @@ public class CharacterStats : MonoBehaviour
     public int currentHealth;
 
     public System.Action onHealthChanged;
-    protected bool isDead;
+    public bool isDead { get; private set; }
 
     protected virtual void Start()
     {
@@ -80,6 +81,23 @@ public class CharacterStats : MonoBehaviour
             ApplyIgniteDamage();
     }
 
+    public virtual void IncreaseStatBy(int modifier, float duration, Stat statToModify)
+    {
+        if (statToModify == null)
+            return;
+
+        StartCoroutine(StatModCoroutine(modifier, duration, statToModify));
+    }
+
+    private IEnumerator StatModCoroutine(int modifier, float duration, Stat statToModify)
+    {
+        statToModify.AddModifier(modifier);
+
+        yield return new WaitForSeconds(duration);
+
+        statToModify.RemoveModifier(modifier);
+    }
+
     private void ApplyIgniteDamage()
     {
         if (igniteDamageTimer < 0)
@@ -108,8 +126,8 @@ public class CharacterStats : MonoBehaviour
         totalDamage = CheckTargetArmor(targetStats, totalDamage);
 
         targetStats.TakeDamage(totalDamage);
-        // if inventory current weapon has fire effect
-        // then DoMagicalDamage(targetStats);
+
+        DoMagicalDamage(targetStats); // remove if you don't want to apply magic hit on primary attack
     }
 
     #region Magical damage and ailments
@@ -270,8 +288,17 @@ public class CharacterStats : MonoBehaviour
 
         if (currentHealth < 0 && !isDead)
             Die();
-        
+    }
 
+    public virtual void IncreaseHealthBy(int amount)
+    {
+        currentHealth += amount;
+
+        if (currentHealth > GetMaxHealthValue())
+            currentHealth = GetMaxHealthValue();
+        
+        if (onHealthChanged != null)
+            onHealthChanged();
     }
 
     protected virtual void DecreaseHealthBy(int damage)
