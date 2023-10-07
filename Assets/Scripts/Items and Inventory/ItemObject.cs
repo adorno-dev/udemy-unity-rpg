@@ -11,7 +11,7 @@ public class ItemObject : MonoBehaviour
             return;
 
         GetComponent<SpriteRenderer>()
-            .sprite = itemData.icon;
+            .sprite = itemData.itemIcon;
 
         gameObject.name = $"Item object - {itemData.itemName}";
     }

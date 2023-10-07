@@ -13,6 +13,7 @@ Scenes/
 Assets/Tile Palette/
 Assets/Prefabs/
 Assets/TextMesh Pro/
+**/**.asset
 **/**.csproj
 **/**.sln
 **/**.meta
