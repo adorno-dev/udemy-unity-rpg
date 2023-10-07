@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum EquipmentType
@@ -38,6 +39,11 @@ public class ItemData_Equipment : ItemData
     public int fireDamage;
     public int iceDamage;
     public int lightingDamage;
+
+    [Header("Craft requirements")]
+    public List<InventoryItem> craftingMaterials; 
+
+    private int descriptionLength;
 
     public void Effect(Transform enemyPosition)
     {
@@ -92,6 +98,55 @@ public class ItemData_Equipment : ItemData
         playerStats.fireDamage.RemoveModifier(fireDamage);
         playerStats.iceDamage.RemoveModifier(iceDamage);
         playerStats.lightingDamage.RemoveModifier(lightingDamage);
+    }
+
+    public override string GetDescription()
+    {
+        sb.Length = 0;
+        descriptionLength = 0;
+
+        AddItemDescription(strength, "Strengh");
+        AddItemDescription(agility, "Agility");
+        AddItemDescription(intelligence, "Intelligence");
+        AddItemDescription(vitality, "Vitality");
+
+        AddItemDescription(damage, "Damage");
+        AddItemDescription(critChance, "Crit.Chance");
+        AddItemDescription(critPower, "Crit.Power");
+
+        AddItemDescription(health, "Health");
+        AddItemDescription(evasion, "Evasion");
+        AddItemDescription(armor, "Armor");
+        AddItemDescription(magicResistance, "Magic resist.");
+
+        AddItemDescription(fireDamage, "Fire damage");
+        AddItemDescription(iceDamage, "Ice damage");
+        AddItemDescription(lightingDamage, "Lighting dmg.");
+
+        if (descriptionLength < 5)
+        {
+            for (int i = 0; i < 5 - descriptionLength; i++)
+            {
+                sb.AppendLine();
+                sb.Append("");
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    private void AddItemDescription(int value, string name)
+    {
+        if (value != 0)
+        {
+            if (sb.Length > 0)
+                sb.AppendLine();
+            
+            if (value > 0)
+                sb.Append($"+ {value} {name}");
+            
+            descriptionLength++;
+        }
     }
 
 }
