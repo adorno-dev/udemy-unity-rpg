@@ -353,6 +353,11 @@ public class CharacterStats : MonoBehaviour
         return totalDamage;
     }
 
+    public virtual void OnEvasion()
+    {
+
+    }
+
     private bool TargetCanAvoidAttack(CharacterStats targetStats)
     {
         int totalEvasion = targetStats.evasion.GetValue() + targetStats.agility.GetValue();
@@ -362,6 +367,7 @@ public class CharacterStats : MonoBehaviour
 
         if (Random.Range(0, 100) < totalEvasion)
         {
+            targetStats.OnEvasion();
             return true;
         }
 

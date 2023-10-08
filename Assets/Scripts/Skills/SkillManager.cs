@@ -10,6 +10,7 @@ public class SkillManager : MonoBehaviour
     public Blackhole_Skill blackhole { get; private set; }
     public Crystal_Skill crystal { get; private set; }
     public Parry_Skill parry { get; private set; }
+    public Dodge_Skill dodge { get; private set; }
 
     private void Awake()
     {

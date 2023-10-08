@@ -140,6 +140,11 @@ public class Inventory : MonoBehaviour
             stashItemSlots[i].UpdateSlot(stash[i]);
         }
 
+        UpdateStatsUI();
+    }
+
+    public void UpdateStatsUI()
+    {
         for (int i = 0; i < statSlots.Length; i++)      // updates info of stats in character UI
         {
             statSlots[i].UpdateStatValueUI();
