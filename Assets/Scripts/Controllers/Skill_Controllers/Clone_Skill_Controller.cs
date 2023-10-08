@@ -10,6 +10,7 @@ public class Clone_Skill_Controller : MonoBehaviour
     private SpriteRenderer sr;
     private Animator anim;
     private float cloneTimer;
+    private float attackMultiplier;
     private int facingDir = 1;
 
     [SerializeField] private Transform attackCheck;
@@ -51,7 +52,20 @@ public class Clone_Skill_Controller : MonoBehaviour
         {
             if (hit.GetComponent<Enemy>() != null)
             {
-                player.stats.DoDamage(hit.GetComponent<CharacterStats>());
+                // player.stats.DoDamage(hit.GetComponent<CharacterStats>());
+
+                PlayerStats playerStats = player.GetComponent<PlayerStats>();
+                EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
+
+                playerStats.CloneDoDamage(enemyStats, attackMultiplier);
+
+                if (player.skill.clone.canApplyOnHitEffect)
+                {
+                    ItemData_Equipment weaponData = Inventory.instance.GetEquipment(EquipmentType.Weapon);
+
+                    if (weaponData != null)
+                        weaponData.Effect(hit.transform);
+                }
 
                 if (canDuplicateClone)
                 {
@@ -76,7 +90,7 @@ public class Clone_Skill_Controller : MonoBehaviour
         }
     }
 
-    public void SetupClone(Transform newTransform, float cloneDuration, bool canAttack, Vector3 offset, Transform closestEnemy, bool canDuplicateClone, float chanceToDuplicate, Player player)
+    public void SetupClone(Transform newTransform, float cloneDuration, bool canAttack, Vector3 offset, Transform closestEnemy, bool canDuplicateClone, float chanceToDuplicate, Player player, float attackMultiplier)
     {
         if (canAttack)
             anim.SetInteger("AttackNumber", Random.Range(1, 3));
@@ -88,6 +102,7 @@ public class Clone_Skill_Controller : MonoBehaviour
         this.closestEnemy = closestEnemy;
         this.canDuplicateClone = canDuplicateClone;
         this.chanceToDuplicate = chanceToDuplicate;
+        this.attackMultiplier = attackMultiplier;
 
         FaceClosestTarget();
     }

@@ -40,4 +40,26 @@ public class PlayerStats : CharacterStats
     {
         player.skill.dodge.CreateMirageOnDodge();
     }
+
+    public void CloneDoDamage(CharacterStats targetStats, float multiplier)
+    {
+        if (TargetCanAvoidAttack(targetStats))
+            return;
+
+        int totalDamage = damage.GetValue() + strength.GetValue();
+
+        if (multiplier > 0)
+            totalDamage = Mathf.RoundToInt(totalDamage * multiplier);
+
+        if (CanCrit())
+        {
+            totalDamage = CalculateCriticalDamage(totalDamage);
+        }
+
+        totalDamage = CheckTargetArmor(targetStats, totalDamage);
+
+        targetStats.TakeDamage(totalDamage);
+
+        DoMagicalDamage(targetStats); // remove if you don't want to apply magic hit on primary attack
+    }
 }

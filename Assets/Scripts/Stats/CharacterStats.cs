@@ -358,7 +358,7 @@ public class CharacterStats : MonoBehaviour
 
     #region Stat calculations
 
-    private int CheckTargetArmor(CharacterStats targetStats, int totalDamage)
+    protected int CheckTargetArmor(CharacterStats targetStats, int totalDamage)
     {
         if (targetStats.isChilled)
             totalDamage -= Mathf.RoundToInt(targetStats.armor.GetValue() * .8f);
@@ -374,7 +374,7 @@ public class CharacterStats : MonoBehaviour
 
     }
 
-    private bool TargetCanAvoidAttack(CharacterStats targetStats)
+    protected bool TargetCanAvoidAttack(CharacterStats targetStats)
     {
         int totalEvasion = targetStats.evasion.GetValue() + targetStats.agility.GetValue();
 
@@ -390,7 +390,7 @@ public class CharacterStats : MonoBehaviour
         return false;
     }
 
-    private bool CanCrit()
+    protected bool CanCrit()
     {
         int totalCriticalChance = critChance.GetValue() + agility.GetValue();
         
@@ -402,7 +402,7 @@ public class CharacterStats : MonoBehaviour
         return false;
     }
 
-    private int CalculateCriticalDamage(int damage)
+    protected int CalculateCriticalDamage(int damage)
     {
         float totalCritPower = (critPower.GetValue() + strength.GetValue()) * 0.1f;
         float critDamage = damage * totalCritPower;
