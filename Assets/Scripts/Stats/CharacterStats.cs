@@ -69,6 +69,8 @@ public class CharacterStats : MonoBehaviour
     public System.Action onHealthChanged;
     public bool isDead { get; private set; }
 
+    private bool isVulnerable;
+
     protected virtual void Start()
     {
         critPower.SetDefaultValue(150);
@@ -97,6 +99,17 @@ public class CharacterStats : MonoBehaviour
 
         if (isIgnited)
             ApplyIgniteDamage();
+    }
+
+    public void MakeVulnerableFor(float duration) => StartCoroutine(VulnerableCoroutine(duration));
+
+    private IEnumerator VulnerableCoroutine(float duration)
+    {
+        isVulnerable = true;
+
+        yield return new WaitForSeconds(duration);
+
+        isVulnerable = false;
     }
 
     public virtual void IncreaseStatBy(int modifier, float duration, Stat statToModify)
@@ -321,6 +334,9 @@ public class CharacterStats : MonoBehaviour
 
     protected virtual void DecreaseHealthBy(int damage)
     {
+        if (isVulnerable)
+            damage = Mathf.RoundToInt(damage * 1.1f);
+
         currentHealth -= damage;
 
         if (onHealthChanged != null)
