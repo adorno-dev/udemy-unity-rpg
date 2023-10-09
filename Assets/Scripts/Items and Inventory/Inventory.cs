@@ -38,6 +38,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     [Header("Database")]
     public List<InventoryItem> loadedItems;
+    public List<ItemData_Equipment> loadedEquipment;
 
     private void Awake()
     {
@@ -69,6 +70,11 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     private void AddStartingItems()
     {
+        foreach (ItemData_Equipment item in loadedEquipment)
+        {
+            EquipItem(item);
+        }
+
         if (loadedItems.Count > 0)
         {
             foreach (InventoryItem item in loadedItems)
@@ -354,21 +360,38 @@ public class Inventory : MonoBehaviour, ISaveManager
                 }
             }
         }
+
+        foreach (string loadedItemId in data.equipmentId)
+        {
+            foreach (var item in GetItemDatabase())
+            {
+                if (item != null && loadedItemId == item.itemId)
+                {
+                    loadedEquipment.Add(item as ItemData_Equipment);
+                }
+            }
+        }
     }
 
     public void SaveData(ref GameData data)
     {
         data.inventory.Clear();
+        data.equipmentId.Clear();
+
         foreach (KeyValuePair<ItemData, InventoryItem> item in inventoryDictionary)
-        {
             data.inventory.Add(item.Key.itemId, item.Value.stackSize);
-        }
+
+        foreach (KeyValuePair<ItemData, InventoryItem> item in stashDictionary)
+            data.inventory.Add(item.Key.itemId, item.Value.stackSize);
+
+        foreach (KeyValuePair<ItemData_Equipment, InventoryItem> item in equipmentDictionary)
+            data.equipmentId.Add(item.Key.itemId);
     }
 
     private List<ItemData> GetItemDatabase()
     {
         List<ItemData> itemDatabase = new List<ItemData>();
-        string[] assetNames = AssetDatabase.FindAssets("", new [] {"Assets/Data/Equipment"});
+        string[] assetNames = AssetDatabase.FindAssets("", new [] {"Assets/Data/Items"});
 
         foreach (string soName in assetNames)
         {
