@@ -28,4 +28,6 @@ public class PlayerManager : MonoBehaviour
 
         return true;
     }
+
+    public int GetCurrentCurrency() => currency;
 }

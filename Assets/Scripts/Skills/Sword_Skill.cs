@@ -33,7 +33,7 @@ public class Sword_Skill : Skill
 
     [Header("Skill info")]
     [SerializeField] private UI_SkillTreeSlot swordUnlockButton;
-    public bool swordUnlock { get; private set; }
+    public bool swordUnlocked { get; private set; }
     [SerializeField] private GameObject swordPrefab;
     [SerializeField] private Vector2 launchForce;
     [SerializeField] private float swordGravity;
@@ -173,7 +173,7 @@ public class Sword_Skill : Skill
         if (swordUnlockButton.unlocked)
         {
             swordType = SwordType.Regular;
-            swordUnlock = true;
+            swordUnlocked = true;
         }
     }
 
