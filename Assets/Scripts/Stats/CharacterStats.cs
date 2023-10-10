@@ -146,6 +146,8 @@ public class CharacterStats : MonoBehaviour
     {
         if (TargetCanAvoidAttack(targetStats))
             return;
+        
+        targetStats.GetComponent<Entity>().SetupKnockbackDir(transform);
 
         int totalDamage = damage.GetValue() + strength.GetValue();
 
