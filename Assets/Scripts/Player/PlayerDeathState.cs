@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class PlayerDeathState : PlayerState
 {
     public PlayerDeathState(PlayerStateMachine stateMachine, Player player, string animBoolName) : base(stateMachine, player, animBoolName) {}
@@ -5,6 +7,8 @@ public class PlayerDeathState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
+        GameObject.Find("Canvas").GetComponent<UI>().SwitchOnEndScreen();
     }
 
     public override void Update()

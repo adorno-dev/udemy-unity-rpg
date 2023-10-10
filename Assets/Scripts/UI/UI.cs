@@ -1,7 +1,15 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class UI : MonoBehaviour
 {
+    [Header("End screen")]
+    [SerializeField] private UI_FadeScreen fadeScreen;
+    [SerializeField] private GameObject endText;
+    [SerializeField] private GameObject restartButton;
+    [Space]
+
     [SerializeField] private GameObject characterUI;
     [SerializeField] private GameObject skillTreeUI;
     [SerializeField] private GameObject craftUI;
@@ -43,23 +51,12 @@ public class UI : MonoBehaviour
 
     public void SwitchTo(GameObject menu)
     {
-        // Transform current = null;
-
-        // for (int i = 0; i < transform.childCount; i++)
-        // {
-        //     current = transform.GetChild(i);
-
-        //     if (current.name == menu.name)
-        //         current.gameObject.SetActive(true);
-        //     else
-        //         current.gameObject.SetActive(false);
-        // }
-
-        // CheckForGameUI();
-
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).gameObject.SetActive(false);
+            bool isFadeScreen = transform.GetChild(i).GetComponent<UI_FadeScreen>() != null; // we need this to keep fade screen game object active
+
+            if (!isFadeScreen)
+                transform.GetChild(i).gameObject.SetActive(false);
         }
 
         if (menu != null)
@@ -88,4 +85,23 @@ public class UI : MonoBehaviour
 
         SwitchTo(inGameUI);
     }
+
+    public void SwitchOnEndScreen()
+    {
+        fadeScreen.FadeOut();
+        StartCoroutine(EndScreenCoroutine());
+    }
+
+    IEnumerator EndScreenCoroutine()
+    {
+        yield return new WaitForSeconds(1);
+
+        endText.SetActive(true);
+
+        yield return new WaitForSeconds(1);
+
+        restartButton.SetActive(true);
+    }
+
+    public void RestartGameButton() => GameManager.instance.RestartScene();
 }
