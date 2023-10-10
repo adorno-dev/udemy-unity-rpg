@@ -111,16 +111,6 @@ public class Sword_Skill : Skill
         vulnerabilityUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockVulnerability);
     }
 
-    private void SetupGravity()
-    {
-        if (swordType == SwordType.Bounce)
-            swordGravity = bounceGravity;
-        else if (swordType == SwordType.Pierce)
-            swordGravity = pierceGravity;
-        else if (swordType == SwordType.Spin)
-            swordGravity = spinGravity;
-    }
-
     protected override void Update()
     {
         if (Input.GetKeyUp(KeyCode.Mouse1))
@@ -133,6 +123,26 @@ public class Sword_Skill : Skill
                 dots[i].transform.position = DotsPosition(i * spaceBetweenDots);
             }
         }
+    }
+
+    protected override void CheckUnlock()
+    {
+        UnlockSword();
+        UnlockBounceSword();
+        UnlockSpinSword();
+        UnlockPierceSword();
+        UnlockTimeStop();
+        UnlockVulnerability();
+    }
+
+    private void SetupGravity()
+    {
+        if (swordType == SwordType.Bounce)
+            swordGravity = bounceGravity;
+        else if (swordType == SwordType.Pierce)
+            swordGravity = pierceGravity;
+        else if (swordType == SwordType.Spin)
+            swordGravity = spinGravity;
     }
 
     public void CreateSword()

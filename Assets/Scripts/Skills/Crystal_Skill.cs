@@ -44,6 +44,15 @@ public class Crystal_Skill : Skill
         unlockMultiStackButton.GetComponent<Button>().onClick.AddListener(UnlockMultiStack);
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockCrystal();
+        UnlockCrystalMirage();
+        UnlockExplosiveCrystal();
+        UnlockMovingCrystal();
+        UnlockMultiStack();
+    }
+
     // here we unlock crystal skills
     #region Unlock skill region
 
