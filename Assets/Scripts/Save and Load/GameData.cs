@@ -9,8 +9,20 @@ public class GameData
     public SerializableDictionary<string, int> inventory;
     public List<string> equipmentId;
 
+    public SerializableDictionary<string, bool> checkpoints;
+    public string closestCheckpointId;
+
+    public float lostCurrencyX;
+    public float lostCurrencyY;
+    public int lostCurrencyAmount;
+
     public GameData()
     {
+        lostCurrencyX = 0;
+        lostCurrencyY = 0;
+        lostCurrencyAmount = 0;
+
+
         currency = 0;
 
         skillTree = new SerializableDictionary<string, bool>();
@@ -18,5 +30,9 @@ public class GameData
         inventory = new SerializableDictionary<string, int>();
 
         equipmentId = new List<string>();
+
+        checkpoints = new SerializableDictionary<string, bool>();
+
+        closestCheckpointId = string.Empty;
     }
 }

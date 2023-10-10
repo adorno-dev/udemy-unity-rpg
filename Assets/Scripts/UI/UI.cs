@@ -24,6 +24,7 @@ public class UI : MonoBehaviour
     private void Awake()
     {
         SwitchTo(skillTreeUI); // we need this to assin events on skill tree stats before we assign events on skill scripts
+        fadeScreen.gameObject.SetActive(true);
     }
 
     void Start()
@@ -79,7 +80,7 @@ public class UI : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            if (transform.GetChild(i).gameObject.activeSelf)
+            if (transform.GetChild(i).gameObject.activeSelf && transform.GetChild(i).GetComponent<UI_FadeScreen>() == null)
                 return;
         }
 
@@ -88,6 +89,7 @@ public class UI : MonoBehaviour
 
     public void SwitchOnEndScreen()
     {
+        fadeScreen.gameObject.SetActive(true);
         fadeScreen.FadeOut();
         StartCoroutine(EndScreenCoroutine());
     }

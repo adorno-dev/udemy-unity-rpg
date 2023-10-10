@@ -140,7 +140,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.GetComponent<Enemy>() is not null)
+        if (other.GetComponent<Enemy>() != null)
         {
             other.GetComponent<Enemy>().FreezeTime(true);
 
@@ -150,7 +150,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.GetComponent<Enemy>() is not null)
+        if (other.GetComponent<Enemy>() != null)
             other.GetComponent<Enemy>().FreezeTime(false);
     }
 

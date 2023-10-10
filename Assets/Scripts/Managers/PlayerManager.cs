@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour, ISaveManager
 
     private void Awake()
     {
-        if (instance is not null)
+        if (instance != null)
             Destroy(instance.gameObject);
         else
             instance = this;
@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour, ISaveManager
         return true;
     }
 
-    public int GetCurrentCurrency() => currency;
+    public int GetCurrency() => currency;
 
     public void LoadData(GameData data)
     {
