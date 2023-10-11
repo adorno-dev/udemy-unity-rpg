@@ -28,6 +28,9 @@ public class Dodge_Skill : Skill
 
     private void UnlockDodge()
     {
+        if (player.stats == null)
+            return;
+
         if (unlockDodgeButton.unlocked && !dodgeUnlocked)
         {
             player.stats.evasion.AddModifier(evasionAmount);
