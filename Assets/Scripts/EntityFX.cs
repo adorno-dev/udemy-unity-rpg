@@ -1,13 +1,20 @@
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 
 public class EntityFX : MonoBehaviour
 {
+    [Header("Screen shake FX")]
+    [SerializeField] private float shakeMultiplier;
+    public Vector3 shakeSwordImpact;
+    public Vector3 shakeHighDamage;
+    private CinemachineImpulseSource screenShake;
+
     [Header("After image FX")]
     [SerializeField] private GameObject afterImagePrefab;
     [SerializeField] private float colorLooseRate;
     [SerializeField] private float afterImageCooldown;
-    // [SerializeField] private float lifeTime;
+
     private float afterImageCooldownTimer;
 
     [Header("Flash FX")]
@@ -16,6 +23,7 @@ public class EntityFX : MonoBehaviour
 
     private SpriteRenderer sr;    
     private Material originalMat;
+    private Player player;
 
     [Header("Ailment colors")]
     [SerializeField] private Color[] chillColor;
@@ -40,11 +48,19 @@ public class EntityFX : MonoBehaviour
     {
         sr = GetComponentInChildren<SpriteRenderer>();
         originalMat = sr.material;
+        screenShake = GetComponent<CinemachineImpulseSource>();
+        player = PlayerManager.instance.player;
     }
 
     private void Update()
     {
         afterImageCooldownTimer -= Time.deltaTime;
+    }
+
+    public void ScreenShakeFX(Vector3 shakePower)
+    {
+        screenShake.m_DefaultVelocity = new Vector3(shakePower.x * player.facingDir, shakePower.y) * shakeMultiplier;
+        screenShake.GenerateImpulse();
     }
 
     public void CreateAfterImageFX()
@@ -168,7 +184,7 @@ public class EntityFX : MonoBehaviour
             hitFxRotation = new Vector3(0, yRotation, zRotation);
         }
 
-        var newHitFx = Instantiate(hitPrefab, target.position + new Vector3(xPosition, yPosition), Quaternion.identity);
+        var newHitFx = Instantiate(hitPrefab, target.position + new Vector3(xPosition, yPosition), Quaternion.identity); //, target); // if you want particle to follow target
         newHitFx.transform.Rotate(hitFxRotation);
 
         Destroy(newHitFx, .5f);
