@@ -349,6 +349,9 @@ public class CharacterStats : MonoBehaviour
 
         currentHealth -= damage;
 
+        if (damage > 0)
+            fx.CreatePopUpText(damage.ToString());
+
         if (onHealthChanged != null)
             onHealthChanged();
     }
