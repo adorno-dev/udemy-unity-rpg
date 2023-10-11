@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public sealed class PlayerDashState : PlayerState
 {
     public PlayerDashState(PlayerStateMachine stateMachine, Player player, string animBoolName) : base(stateMachine, player, animBoolName) {}
@@ -26,6 +24,8 @@ public sealed class PlayerDashState : PlayerState
 
         if (stateTimer < 0)
             stateMachine.ChangeState(player.idleState);
+        
+        player.fx.CreateAfterImageFX();
     }
 
     public override void Exit()

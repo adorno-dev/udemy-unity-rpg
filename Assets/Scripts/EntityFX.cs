@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class EntityFX : MonoBehaviour
 {
+    [Header("After image FX")]
+    [SerializeField] private GameObject afterImagePrefab;
+    [SerializeField] private float colorLooseRate;
+    [SerializeField] private float afterImageCooldown;
+    // [SerializeField] private float lifeTime;
+    private float afterImageCooldownTimer;
+
     [Header("Flash FX")]
     [SerializeField] private Material hitMat;
     [SerializeField] private float flashDuration;
@@ -24,10 +31,32 @@ public class EntityFX : MonoBehaviour
     [SerializeField] private GameObject hitFx;
     [SerializeField] private GameObject criticalHitFx;
 
+    [Space]
+    [Header("Dust FX")]
+    [SerializeField] private ParticleSystem dustFx;
+
+
     private void Start()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
         originalMat = sr.material;
+    }
+
+    private void Update()
+    {
+        afterImageCooldownTimer -= Time.deltaTime;
+    }
+
+    public void CreateAfterImageFX()
+    {
+        if (afterImageCooldownTimer < 0)
+        {
+            afterImageCooldownTimer = afterImageCooldown;
+
+            var newAfterImage = Instantiate(afterImagePrefab, transform.position, transform.rotation);
+
+            newAfterImage.GetComponent<AfterImageFX>().SetupAfterImage(colorLooseRate, sr.sprite);   
+        }
     }
 
     public void MakeTransparent(bool transparent)
@@ -143,5 +172,11 @@ public class EntityFX : MonoBehaviour
         newHitFx.transform.Rotate(hitFxRotation);
 
         Destroy(newHitFx, .5f);
+    }
+
+    public void PlayDustFX()
+    {
+        if (dustFx != null)
+            dustFx.Play();
     }
 }

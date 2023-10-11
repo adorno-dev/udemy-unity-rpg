@@ -8,5 +8,8 @@ public class DeadZone : MonoBehaviour
             other.GetComponent<CharacterStats>().KillEntity();
         else
             Destroy(other.gameObject);
+        
+        if (other.GetComponentInParent<ItemObject>() != null)
+            Destroy(other.GetComponentInParent<ItemObject>().gameObject);
     }
 }
