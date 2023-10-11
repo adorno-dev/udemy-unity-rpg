@@ -26,6 +26,7 @@ public abstract class Enemy : Entity
     [HideInInspector] public float lastTimeAttacked;
 
     public EnemyStateMachine stateMachine { get; private set; }
+    public EntityFX fx { get; set; }
 
     public string lastAnimBoolName { get; private set; }
 
@@ -36,6 +37,13 @@ public abstract class Enemy : Entity
         stateMachine = new EnemyStateMachine();
 
         defaultMoveSpeed = moveSpeed;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        fx = GetComponent<EntityFX>();
     }
 
     protected override void Update()

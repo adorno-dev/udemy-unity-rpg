@@ -5,29 +5,16 @@ using UnityEngine;
 
 public class EntityFX : MonoBehaviour
 {
+    protected SpriteRenderer sr;    
+    protected Player player;
+
     [Header("Pop up text")]
     [SerializeField] private GameObject popUpTextPrefab;
-
-    [Header("Screen shake FX")]
-    [SerializeField] private float shakeMultiplier;
-    public Vector3 shakeSwordImpact;
-    public Vector3 shakeHighDamage;
-    private CinemachineImpulseSource screenShake;
-
-    [Header("After image FX")]
-    [SerializeField] private GameObject afterImagePrefab;
-    [SerializeField] private float colorLooseRate;
-    [SerializeField] private float afterImageCooldown;
-
-    private float afterImageCooldownTimer;
 
     [Header("Flash FX")]
     [SerializeField] private Material hitMat;
     [SerializeField] private float flashDuration;
-
-    private SpriteRenderer sr;    
     private Material originalMat;
-    private Player player;
 
     [Header("Ailment colors")]
     [SerializeField] private Color[] chillColor;
@@ -43,22 +30,11 @@ public class EntityFX : MonoBehaviour
     [SerializeField] private GameObject hitFx;
     [SerializeField] private GameObject criticalHitFx;
 
-    [Space]
-    [Header("Dust FX")]
-    [SerializeField] private ParticleSystem dustFx;
-
-
-    private void Start()
+    protected virtual void Start()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
         originalMat = sr.material;
-        screenShake = GetComponent<CinemachineImpulseSource>();
         player = PlayerManager.instance.player;
-    }
-
-    private void Update()
-    {
-        afterImageCooldownTimer -= Time.deltaTime;
     }
 
     public void CreatePopUpText(string text)
@@ -70,24 +46,6 @@ public class EntityFX : MonoBehaviour
         var newText = Instantiate(popUpTextPrefab, transform.position + positionOffset, Quaternion.identity);
 
         newText.GetComponent<TextMeshPro>().text = text;
-    }
-
-    public void ScreenShakeFX(Vector3 shakePower)
-    {
-        screenShake.m_DefaultVelocity = new Vector3(shakePower.x * player.facingDir, shakePower.y) * shakeMultiplier;
-        screenShake.GenerateImpulse();
-    }
-
-    public void CreateAfterImageFX()
-    {
-        if (afterImageCooldownTimer < 0)
-        {
-            afterImageCooldownTimer = afterImageCooldown;
-
-            var newAfterImage = Instantiate(afterImagePrefab, transform.position, transform.rotation);
-
-            newAfterImage.GetComponent<AfterImageFX>().SetupAfterImage(colorLooseRate, sr.sprite);   
-        }
     }
 
     public void MakeTransparent(bool transparent)
@@ -203,11 +161,5 @@ public class EntityFX : MonoBehaviour
         newHitFx.transform.Rotate(hitFxRotation);
 
         Destroy(newHitFx, .5f);
-    }
-
-    public void PlayDustFX()
-    {
-        if (dustFx != null)
-            dustFx.Play();
     }
 }
