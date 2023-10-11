@@ -33,10 +33,18 @@ public class PlayerStats : CharacterStats
     {
         base.DecreaseHealthBy(damage);
 
+        if (damage > GetMaxHealthValue() * .3f)
+        {
+            player.SetupKnockbackPower(new Vector2(10, 6));
+
+            int randomSound = Random.Range(34,35);
+            AudioManager.instance?.PlaySFX(randomSound);
+        }
+
         ItemData_Equipment currentArmor = Inventory.instance.GetEquipment(EquipmentType.Armor);
 
         if (currentArmor != null)
-            currentArmor.Effect(player.transform);
+            currentArmor.Effect(player?.transform);
     }
 
     public override void OnEvasion()

@@ -6,7 +6,7 @@ public sealed class PlayerMoveState : PlayerGroundedState
     {
         base.Enter();
 
-        AudioManager.instance.PlaySFX(14);
+        AudioManager.instance?.PlaySFX(14);
     }
 
     public override void Update()
@@ -23,6 +23,6 @@ public sealed class PlayerMoveState : PlayerGroundedState
     {
         base.Exit();
 
-        AudioManager.instance.StopSFX(14);
+        AudioManager.instance?.StopSFX(14);
     }
 }

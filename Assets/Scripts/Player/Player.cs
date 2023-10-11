@@ -84,6 +84,9 @@ public sealed class Player : Entity
 
     protected override void Update()
     {
+        if (Time.timeScale == 0)
+            return;
+
         base.Update();
 
         stateMachine.currentState.Update();
@@ -165,5 +168,10 @@ public sealed class Player : Entity
         base.Die();
 
         stateMachine.ChangeState(deathState);
+    }
+
+    protected override void SetupZeroKnockbackPower()
+    {
+        knockbackPower = new Vector2(0, 0);
     }
 }

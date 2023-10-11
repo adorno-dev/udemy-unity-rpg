@@ -62,6 +62,10 @@ public abstract class Entity : MonoBehaviour
             knockbackDir = 1;
     }
 
+    public void SetupKnockbackPower(Vector2 knockbackPower) => this.knockbackPower = knockbackPower;
+
+    protected virtual void SetupZeroKnockbackPower() {}
+
     protected virtual IEnumerator HitKnockback()
     {
         isKnocked = true;
@@ -71,6 +75,8 @@ public abstract class Entity : MonoBehaviour
         yield return new WaitForSeconds(knockbackDuration);
 
         isKnocked = false;
+
+        SetupZeroKnockbackPower();
     }
 
     protected virtual void ReturnDefaultSpeed()

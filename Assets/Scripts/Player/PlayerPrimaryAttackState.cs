@@ -13,7 +13,7 @@ public sealed class PlayerPrimaryAttackState : PlayerState
     {
         base.Enter();
 
-        // AudioManager.instance.PlaySFX(2);
+        // AudioManager.instance?.PlaySFX(2);
 
         xInput = 0; // we need this to fix bug on attack direction
 
