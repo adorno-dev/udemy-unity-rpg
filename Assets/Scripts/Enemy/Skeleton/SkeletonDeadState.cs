@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class SkeletonDeathState : EnemyState
+public class SkeletonDeadState : EnemyState
 {
     private Enemy_Skeleton enemy;
 
-    public SkeletonDeathState(Enemy enemyBase, EnemyStateMachine stateMachine, string animBoolName, Enemy_Skeleton enemy) : base(enemyBase, stateMachine, animBoolName)
+    public SkeletonDeadState(Enemy enemyBase, EnemyStateMachine stateMachine, string animBoolName, Enemy_Skeleton enemy) : base(enemyBase, stateMachine, animBoolName)
     {
         this.enemy = enemy;
     }

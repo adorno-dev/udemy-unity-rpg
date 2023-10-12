@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public abstract class SkeletonGroundedState : EnemyState
+public class SlimeGroundedState : EnemyState
 {
     protected Transform player;
-    protected Enemy_Skeleton enemy;
+    protected Enemy_Slime enemy;
 
-    public SkeletonGroundedState(Enemy enemyBase, EnemyStateMachine stateMachine, string animBoolName, Enemy_Skeleton enemy) : base(enemyBase, stateMachine, animBoolName)
+    public SlimeGroundedState(Enemy enemyBase, EnemyStateMachine stateMachine, string animBoolName, Enemy_Slime enemy) : base(enemyBase, stateMachine, animBoolName)
     {
         this.enemy = enemy;
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -16,6 +15,7 @@ public abstract class Entity : MonoBehaviour
 
     [Header("Knockback info")]
     [SerializeField] protected Vector2 knockbackPower;
+    [SerializeField] protected Vector2 knockbackOffset;
     [SerializeField] protected float knockbackDuration;
     protected bool isKnocked;
 
@@ -36,10 +36,10 @@ public abstract class Entity : MonoBehaviour
     protected bool facingRight = true;
 
 
-    public Action onFlipped;
+    public System.Action onFlipped;
 
 
-    protected virtual void Awake() {}
+    protected virtual void Awake() { }
 
     protected virtual void Start()
     {
@@ -50,7 +50,7 @@ public abstract class Entity : MonoBehaviour
         cd = GetComponent<CapsuleCollider2D>();
     }
 
-    protected virtual void Update() {}
+    protected virtual void Update() { }
 
     public virtual void SetupKnockbackDir(Transform damageDirection)
     {
@@ -62,13 +62,16 @@ public abstract class Entity : MonoBehaviour
 
     public void SetupKnockbackPower(Vector2 knockbackPower) => this.knockbackPower = knockbackPower;
 
-    protected virtual void SetupZeroKnockbackPower() {}
+    protected virtual void SetupZeroKnockbackPower() { }
 
     protected virtual IEnumerator HitKnockback()
     {
         isKnocked = true;
 
-        rb.velocity = new Vector2(knockbackPower.x * knockbackDir, knockbackPower.y);
+        float xOffset = Random.Range(knockbackOffset.x, knockbackOffset.y);
+
+        // if (knockbackPower.x > 0 || knockbackPower.y > 0)   // this line makes player immune to freeze effect when he takes hit.
+        rb.velocity = new Vector2((knockbackPower.x + xOffset) * knockbackDir, knockbackPower.y);
 
         yield return new WaitForSeconds(knockbackDuration);
 
@@ -82,13 +85,13 @@ public abstract class Entity : MonoBehaviour
         anim.speed = 1;
     }
 
-    public virtual void SlowEntityBy(float slowPercentage, float slowDuration) {}
+    public virtual void SlowEntityBy(float slowPercentage, float slowDuration) { }
 
     public virtual void DamageImpact() => StartCoroutine("HitKnockback");
 
     #region Velocity
 
-    public void SetZeroVelocity() 
+    public void SetZeroVelocity()
     {
         if (isKnocked)
             return;
@@ -105,7 +108,7 @@ public abstract class Entity : MonoBehaviour
 
         FlipController(xVelocity);
     }
-    
+
     #endregion
 
     #region Collision
@@ -113,11 +116,11 @@ public abstract class Entity : MonoBehaviour
     protected virtual void OnDrawGizmos()
     {
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
-        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance, wallCheck.position.y));
+        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
         Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
 
-    public virtual bool IsGroundDetected() 
+    public virtual bool IsGroundDetected()
         => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
     public virtual bool IsWallDetected()
@@ -129,8 +132,8 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void Flip()
     {
-        facingDir = facingDir * -1;
         facingRight = !facingRight;
+        facingDir = facingDir * -1;
         transform.Rotate(0, 180, 0);
 
         if (onFlipped != null)
@@ -145,7 +148,15 @@ public abstract class Entity : MonoBehaviour
             Flip();
     }
 
+    public virtual void SetupDefaultFacingDir(int direction)
+    {
+        facingDir = direction;
+
+        if (facingDir == -1)
+            facingRight = false;
+    }
+
     #endregion
 
-    public virtual void Die() {}
+    public virtual void Die() { }
 }
