@@ -14,21 +14,21 @@ public abstract class Entity : MonoBehaviour
     #endregion
 
     [Header("Knockback info")]
-    [SerializeField] protected Vector2 knockbackPower;
-    [SerializeField] protected Vector2 knockbackOffset;
-    [SerializeField] protected float knockbackDuration;
+    [SerializeField] protected Vector2 knockbackPower = new Vector2(7, 12);
+    [SerializeField] protected Vector2 knockbackOffset = new Vector2(.5f, 2);
+    [SerializeField] protected float knockbackDuration = .07f;
     protected bool isKnocked;
 
     [Header("Collision info")]
     public Transform attackCheck;
-    public float attackCheckRadius;
+    public float attackCheckRadius = 1.2f;
     [Space]
     [SerializeField] protected LayerMask whatIsGround;
     [SerializeField] protected Transform groundCheck;
-    [SerializeField] protected float groundCheckDistance;
+    [SerializeField] protected float groundCheckDistance = 1;
     [Space]
     [SerializeField] protected Transform wallCheck;
-    [SerializeField] protected float wallCheckDistance;
+    [SerializeField] protected float wallCheckDistance = .8f;
 
     public int knockbackDir { get; private set; }
 
