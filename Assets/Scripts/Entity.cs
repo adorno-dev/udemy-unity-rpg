@@ -132,8 +132,8 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void Flip()
     {
-        facingRight = !facingRight;
         facingDir = facingDir * -1;
+        facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
 
         if (onFlipped != null)

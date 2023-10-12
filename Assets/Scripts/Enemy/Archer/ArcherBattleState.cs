@@ -16,10 +16,10 @@ public class ArcherBattleState : EnemyState
     {
         base.Enter();
 
-        player = PlayerManager.instance.transform;
+        player = PlayerManager.instance.player.transform;
 
-        // if (player.GetComponent<PlayerStats>().isDead)
-        //     stateMachine.ChangeState(enemy.moveState);
+        if (player.GetComponent<PlayerStats>().isDead)
+            stateMachine.ChangeState(enemy.moveState);
     }
 
     public override void Update()
@@ -50,7 +50,9 @@ public class ArcherBattleState : EnemyState
                 stateMachine.ChangeState(enemy.idleState);
         }
 
-        BattleStateFlipControl();
+        //BattleStateFlipControl();
+
+        enemy.FlipController(enemy.transform.position.x);
     }
 
     private void BattleStateFlipControl()

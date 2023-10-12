@@ -15,10 +15,10 @@ public class SlimeBattleState : EnemyState
     {
         base.Enter();
 
-        player = PlayerManager.instance.transform;
+        player = PlayerManager.instance.player.transform;
 
-        // if (player.GetComponent<PlayerStats>().isDead)
-        //     stateMachine.ChangeState(enemy.moveState);
+        if (player.GetComponent<PlayerStats>().isDead)
+            stateMachine.ChangeState(enemy.moveState);
     }
 
     public override void Update()

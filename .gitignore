@@ -16,6 +16,7 @@ Assets/Audio/
 Assets/Data/
 Assets/Prefabs/
 Assets/TextMesh Pro/
+**/**.vsconfig
 **/**.asset
 **/**.csproj
 **/**.sln
