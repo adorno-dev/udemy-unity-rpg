@@ -50,9 +50,7 @@ public class ArcherBattleState : EnemyState
                 stateMachine.ChangeState(enemy.idleState);
         }
 
-        //BattleStateFlipControl();
-
-        enemy.FlipController(enemy.transform.position.x);
+        BattleStateFlipControl();
     }
 
     private void BattleStateFlipControl()
