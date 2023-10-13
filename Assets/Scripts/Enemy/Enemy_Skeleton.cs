@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public sealed class Enemy_Skeleton : Enemy
 {
 
