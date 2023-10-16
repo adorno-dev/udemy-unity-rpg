@@ -17,8 +17,8 @@ public class DeathBringerBattleState : EnemyState
 
         player = PlayerManager.instance.player.transform;
 
-        // if (player.GetComponent<PlayerStats>().isDead)
-        //     stateMachine.ChangeState(enemy.moveState);
+        if (player.GetComponent<PlayerStats>().isDead)
+            stateMachine.ChangeState(enemy.idleState);
     }
 
     public override void Update()
