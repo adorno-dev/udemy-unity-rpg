@@ -3,6 +3,8 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
+    // TODO: Make it more customizable like a dictionary of attributes instead.
+
     #region Components
 
     public Animator anim { get; private set; }
