@@ -47,7 +47,7 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             if (shouldBeUnlocked[i].unlocked == false)
             {
-                Debug.Log("Cannot unlock skill");
+                // Debug.Log("Cannot unlock skill");
                 return;
             }
         }
@@ -56,7 +56,7 @@ public class UI_SkillTreeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             if (shouldBeLocked[i].unlocked == true)
             {
-                Debug.Log("Cannot unlock skill");
+                // Debug.Log("Cannot unlock skill");
                 return;
             }
         }
